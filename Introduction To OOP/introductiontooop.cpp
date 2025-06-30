@@ -18,13 +18,33 @@ public:
 	}
 	void set_x(double x)
 	{
-		this ->x = x;
+		this->x = x;
 	}
 	void set_y(double y)
 	{
-		this ->y = y;
+		this->y = y;
+	}
+
+	//Methods;
+
+	double distance(Point other)
+	{
+		//this - эта точка (находим расстояние от этой точки)
+		//other - та точка (до указанной точки)
+		double x_distance = this->x - other.x;
+		double y_distance = this->y - other.y;
+		double distance = sqrt(x_distance * x_distance + y_distance * y_distance);
+		//sqrt() - квадратный корень
+		return distance;
 	}
 };
+double distance(Point A, Point B)
+{
+	double x_distance = A.get_x() - B.get_x();
+	double y_distance = A.get_y() - B.get_y();
+	double distance = sqrt(x_distance * x_distance + y_distance * y_distance);
+	return distance;
+}
 
 //#define STRUCT_POINT
 
@@ -33,20 +53,30 @@ void main()
 	setlocale(LC_ALL, "");
 #ifdef STRUCT_POINT
 	Point A; //Создание перемененой "A" типа "Point"
-	         //Создание объекта "A" структуры "Point"
-	         //Создание экземпляра "A" структуры "Point"
+	//Создание объекта "A" структуры "Point"
+	//Создание экземпляра "A" структуры "Point"
 	A.x = 2;
 	A.y = 3;
 	cout << A.x << "\t" << A.y << endl;
 
-    Point* pA = &A;
-    cout << pA -> x << "\t" << pA ->y << endl;
+	Point* pA = &A;
+	cout << pA->x << "\t" << pA->y << endl;
 #endif
 
 	Point A;
 	A.set_x(2);
 	A.set_y(3);
 	cout << A.get_x() << "\t" << A.get_y() << endl;
+
+	Point B;
+	B.set_x(7);
+	B.set_y(8);
+	cout << B.get_x() << "\t" << B.get_y() << endl;
+
+	cout << "Расстояние от точки 'А' до точки 'B': " << A.distance(B) << endl;
+	cout << "Расстояние от точки 'B' до точки 'A': " << B.distance(A) << endl;
+	cout << "Расстояние между точками 'A' и 'B': " << distance(A, B) << endl;
+	cout << "Расстояние между точками 'B' и 'A': " << distance(B, A) << endl;
 }
 
 
@@ -65,7 +95,7 @@ void main()
 Объекты принято классифицировать. Класс - это множество объектов с одинаковым набором характеристик, состояний и поведений.
 
 С точки зрения ООП, класс - это синтаксическая конструкция, позволяющая описывать объекты.
-Классы состоят из полей или членов. 
+Классы состоят из полей или членов.
 Поля или члены класса бывают двух видов:
 1) Переменные
 2) Методы
@@ -97,10 +127,10 @@ Methods - определяют поведение объектов, и их взаимодействие с другими объектами
 Инкапсуляция - это сокрытие определенной части класса от внешнего мира. Инкапсуляция реализуется модификаторами доступа и get/set методами
 В C++ существует всего 3 модификатора доступа:
 1) Private:                  закрытые поля, доступные только внутри класса (member-variables)
-2) Public:                   открытые поля, доступные из любого места программы (member-functions)          
+2) Public:                   открытые поля, доступные из любого места программы (member-functions)
 3) Protected:                защищенные поля, доступные только внутри класса и его дочерних классов
 
-Переменные члены класса должны быть в private секции, переменные обязательно должны быть закрытыми. 
+Переменные члены класса должны быть в private секции, переменные обязательно должны быть закрытыми.
 Размещение переменных в pubic секции - грубейшее нарушение инкапсуляции.
 
 В public секции, как правило, располагают методы (method functions). Методы могут быть расположены и в private секции.
