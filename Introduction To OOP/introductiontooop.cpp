@@ -62,12 +62,26 @@ public:
 		cout << "Destructor:\t\t" << this << endl;
 	}
 	//Operators;
-	Point operator = (const Point& other)
+	Point& operator = (const Point& other)
 	{
 		this->x = other.x;
 		this->y = other.y;
 		cout << "CopyAssignment:\t\t" << this << endl;
 		return *this;
+	}
+
+	Point& operator++() //Prefix increment
+	{
+		x++;
+		y++;
+		return *this;
+	}
+	Point operator++ (int) //Postfix  (Suffix) increment
+	{
+		Point old = *this; //Сохраняем старое значение объекта
+		x++;
+		y++;
+		return old;
 	}
 
 	//Methods;
@@ -96,10 +110,33 @@ double distance(Point A, Point B)
 	return distance;
 }
 
+Point& operator+ (const Point& left, const Point& right)
+{
+	Point result;
+	result.set_x(left.get_x() + right.get_x());
+	result.set_y(left.get_y() + right.get_y());
+	return result;
+}
+
+bool operator == (const Point& left, const Point& right)
+{
+	/*
+	if (left.get_x() == right.get_x() && left.get_y() == right.get_y())
+		return true;
+	else
+		return false;
+	*/
+	return left.get_x() == right.get_x() && left.get_y() == right.get_y();
+}
+bool operator != (const Point& left, const Point& right)
+{
+	return !(left == right);
+}
 //#define STRUCT_POINT
 //#define DISTANCE_CHECK
 //#define CONSTRUCTORS_CHECK
 //#define ASSIGNEMT_CHECK
+//#define ARITHMETICAL_OPERATORS_CHECK
 
 void main()
 {
@@ -188,9 +225,17 @@ void main()
 	C.print();
 #endif
 
+#ifdef ARITHMETICAL_OPERATORS_CHECK
 	Point A(2, 3);
 	Point B(7, 8);
 	Point C = A + B;
+	C.print();
+
+	A = B++;
+	A.print();
+	B.print();
+#endif
+	cout << (Point(2, 3) != Point(2, 3)) << endl;
 }
 
 
