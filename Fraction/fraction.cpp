@@ -206,6 +206,48 @@ Fraction operator/(const Fraction& left, const Fraction& right)
 	return left * right.inverted();
 }
 
+//Comparison operators
+
+bool operator == (Fraction left, Fraction right)
+{
+	left.to_improper();
+	right.to_improper();
+	return
+		left.get_numerator() * right.get_denominator() ==
+		right.get_numerator() * left.get_denominator();
+}
+bool operator != (const Fraction& left, const Fraction& right)
+{
+	return !(left == right);
+}
+bool operator > (Fraction left, Fraction right)
+{
+	left.to_improper();
+	right.to_improper();
+	return
+		left.get_numerator() * right.get_denominator() >
+		right.get_numerator() * left.get_denominator();
+}
+
+bool operator < (Fraction left, Fraction right)
+{
+	left.to_improper();
+	right.to_improper();
+	return
+		left.get_numerator() * right.get_denominator() <
+		right.get_numerator() * left.get_denominator();
+}
+bool operator >=(const Fraction& left, const Fraction& right)
+{
+	return !(left < right);
+	//return left > right || left == right;
+}
+bool operator <=(const Fraction& left, const Fraction& right)
+{
+	return !(left > right);
+	//return left < right || left == right;
+}
+
 //#define CONSTRUCTORS_CHECK
 //#define ARITTMETICAL_OPERATORS_CHECK
 //#define INCREMENTAl_CHECK
@@ -252,6 +294,9 @@ void main()
 	A.print();
 	B.print();
 #endif // INCREMENTAL_CHECK
+
+	cout << (2 == 3) << endl;
+	cout << (Fraction(1, 2) >= Fraction(5, 10)) << endl;
 
 
 }
