@@ -122,6 +122,15 @@ public:
 		integer--;
 		return old;
 	}
+
+//Type-cast operators:
+	operator int()const
+	{
+		//const в начале заголовка метода означает, что метод возвращает константное значение
+		//const в конце заголовка метода означает, что метод - константный, то есть не изменяет объект, для которого вызывается
+		to_improper();
+		return integer + numerator / denominator;
+	}
 //Methods:
 	Fraction& to_improper()
 	{
@@ -275,7 +284,10 @@ std::ostream& operator << (std::ostream& os, const Fraction& obj)
 //#define ARITTMETICAL_OPERATORS_CHECK
 //#define INCREMENTAl_CHECK
 //#define COMPARISON_OPERATORS
-#define STREAMS_CHECK
+//#define STREAMS_CHECK
+//#define TYPE_CONVERSIONS_BASICS
+//#define CONVERSIONS_FROM_OTHER_TO_CLASS
+#define CONVERSIONS_FROM_CLASS_TO_OTHER
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -334,5 +346,59 @@ void main()
 	cout << A << endl;
 #endif // STREAMS_CHECK
 
+#ifdef TYPE_CONVERSIONS_BASICS
+
+	cout << (int)(3.14) << endl;
+	int a = 2;    //No conversion
+	double b = 3; //Conversion from less to more
+	int c = b;    //Conversion from more to less without data loss
+	int d = 5.5;  //Conversion from more to less with data loss
+
+#endif // TYPE_CONVERSIONS_BASICS
+
+#ifdef CONVERSIONS_FROM_OTHER_TO_CLASS
+
+	Fraction A = 5; //Single-Argument constructor (from less to more)
+	cout << A << endl;
+
+	Fraction B; 
+	B = 8;
+
+#endif // CONVERSIONS_FROM_OTHER_TO_CLASS
+
+#ifdef CONVERSIONS_FROM_CLASS_TO_OTHER
+
+	Fraction A(2, 3, 4);
+	A.to_improper().print();
+	int a = A;
+	cout << a << endl;
+
+#endif // CONVERSIONS_FROM_CLASS_TO_OTHER
 
 }
+
+/*
+Преобразование типов:
+В языке C++ существует явное и неявное преобразование типов (expcilit - явное преобразование типов, implicit - неявное преобразование типов).
+
+Для того, чтобы явно преобразовать значение в другой тип данных, необходимо желаемый тип данных указать в круглых скобках перед значением
+(type)value - C-like notation - C-подобная форма записи
+type(value) - Functional notation - функциональная форма записи
+
+Явное преобразование выполняет программист
+Неявное преобразование выполняет компилятор, а именно - оператор
+
+Как явное, так и неявное преобразование бывают от меньшего к большему или от большего к меньшему(может привести к потере данных, компилятор выдает предупреждение C4244).
+Все операторы в C++ приводят все значения в выражении к наибольшему типу данных для того, чтобы избежать потери данных
+Операторы присваивания всегда приводят значение справа к типу слева, если типы преобразуются. И не важно, произойдет ли про этом потеря данных или нет.
+
+Преобразование типов в ООП:
+
+1) Из другого типа в класс (from other to Class)
+2) Из класса в другие типы (from Class to other)
+
+Для того, чтобы другие типы преобразовывать в объекты класса, в классе должны быть конструктор с одним параметром и оператор присваивания (второй не работает без первого)
+Для того, чтобы объекты класса преобразовать в другие типы данных, в классе должны быть соответствующие операторы преобразования. 
+Операторы преобразования это самые обычные методы, имя которых состоит из ключевого слова "operator" и спецификатора существуюго типа.
+Операторы преобразования всегда возвращают значение, но перед ними никогда не пишется тип возвращаемого значения, поскольку он является частью имени функции.
+*/
