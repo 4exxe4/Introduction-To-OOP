@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+#define delimiter  "---------------------------------------"
+
 class String
 {
 	int size;     //размер строки в байтах
@@ -53,6 +55,31 @@ public:
 		size = 0;
 		cout << "Destructor:\t" << this << endl;
 	}
+	//Operators:
+	String& operator = (const String& other)
+	{
+		// this->str = other.str; Shallow copy - Поверхностное копирование
+		///-----------------------------------------///
+		//0) Проверяем, не является ли тот объект этим объектом
+		if (this == &other)return *this;
+		//1) Удаляем старую динамическую память
+		delete[] this->str;
+		//Deep copy - побитовое копирование:
+		this->size = other.size;
+		//2) Выделяем новую динамическую память
+		this->str = new char[size] {};
+		for (int i = 0; i < size; i++)this->str[i] = other.str[i];
+		cout << "CopyAssignment:\t\t" << this << endl;
+		return *this;
+	}
+	char operator[](int i) const
+	{
+		return str[i];  //Index operator, subscript operator
+	}
+	char& operator[](int i) 
+	{
+		return str[i];
+	}
 
 	//Methods:
 	void print()const
@@ -66,9 +93,11 @@ String operator+ (const String& left, const String& right)
 {
 	String result (left.get_size() + right.get_size() - 1);
 	for (int i = 0; i < left.get_size(); i++)
-		result.get_str()[i] = left.get_str()[i];
+		result[i] = left[i];
+		//result.get_str()[i] = left.get_str()[i];
 	for (int i = 0; i < right.get_size(); i++)
-		result.get_str()[i + left.get_size() - 1] = right.get_str()[i];
+		result[i + left.get_size() - 1] = right[i];
+		//result.get_str()[i + left.get_size() - 1] = right.get_str()[i];
 	return result;
 }
 
@@ -77,7 +106,8 @@ std::ostream& operator << (std::ostream& os, const String& obj)
 	return os << obj.get_str();
 }
 
-//#define CONSTRUCTORS_CHECK
+#define CONSTRUCTORS_CHECK
+//#define COPY_SEMANTIC_CHECK
 
 void main()
 {
@@ -86,24 +116,38 @@ void main()
 
 	String str1;
 	str1.print();
+	cout << delimiter << endl;
 
 	String str2 (5); //Conversion from 'int' to 'String'
 	str2.print();
+	cout << delimiter << endl;
 
 	String str3 = "Hello";
 	str3.print();
 	cout << str3 << endl;
+	cout << delimiter << endl;
 
 	String str4 = "World";
 	cout << str4 << endl;
+	cout << delimiter << endl;
+
+	String str5 = str3 + str4;
+	cout << str5 << endl;
+	cout << delimiter << endl;
 
 #endif // CONSTRUCTORS_CHECK
 
+#ifdef COPY_SEMANTIC_CHECK
+
 	String str1 = "Hello";
+	str1 = str1;
 	cout << str1 << endl;
 
-	String str2 = str1;
+	String str2;
+	str2= str1;
 	cout << str2 << endl;
+
+#endif // COPY_SEMANTIC_CHECK
 }
 /*
 Использование динамической памяти в классе:
@@ -123,5 +167,15 @@ void main()
 и копировать содержимое этой памяти из другого объекта в наш.
 
 Неявные конструктор копирования и оператор присваивания выполняют поверхностное копирование (shallow copy). То есть не выделяют новую память под объект, а копируют адрес памяти из другого объекта в наш, в результате чего возникает ситуация, когда есть два и более объекта, которые владеют одной и той же областью динамической памяти, что приводит к непредсказуемым последствиям. Как правило, это часто вызывает "debug assertion failed".
-Чтобы избежать таких ситуаций, в классах с динамической памятью обязательно нужно реализовывать CopyConstructor и CopyAssignment
+Чтобы избежать таких ситуаций, в классах с динамической памятью обязательно нужно реализовывать CopyConstructor и CopyAssignment.
+
+CopyAssignment прежде чем выделить новую дмнамическую память обязательно должен удалить старую динамическую память.
+Прежде, чем удалять динамическую память, нужно убедиться в том, что CopyAssignment не принял тот объект для которого он вызывается.
+
+Конструктор копирования и оператор присваивания еще называют CopyMethods или CopySemantic.
+
+ Перегрузка оператора []:
+
+ Оператор "[]" принимает индекс элемента массива и возвращает значение по индексу.
+
 */
