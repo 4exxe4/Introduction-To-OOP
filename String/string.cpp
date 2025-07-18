@@ -23,36 +23,38 @@ public:
 	}
 
 	//Constructors:
-	explicit String(int size = 80)
+	explicit String(int size = 80):size(size), str (new char[size] {})
 	{
 		//Конструктор по умолчанию создает пустую строку размером 80 байт
-		this->size = size;
-		this->str = new char[size] {};
+		//this->size = size;
+		//this->str = new char[size] {};
 		cout << "DefaulConstructor:\t " << this << endl;
 	}
-	String(const char* str)
+	String(const char* str):
+		size(strlen(str) +1),
+		str(new char[size] {})
 	{
-		this->size = strlen(str) + 1; //strlen() возвращает размер строки в символах, +1 нужен для выделения памяти под nullterminator
-		this->str = new char[size] {};
+		//this->size = strlen(str) + 1; //strlen() возвращает размер строки в символах, +1 нужен для выделения памяти под nullterminator
+		//this->str = new char[size] {};
 		for (int i = 0; i < size; i++)this->str[i] = str[i];
 		cout << "Constructor:\t\t" << this << endl;
 	}
-	String(const String& other)
+	String(const String& other):size(other.size),str(new char[size] {})
 	{
 		//this->str = other.str;     //ShallowCopy
 		//Deep copy:
-		this->size = other.size;
-		this->str = new char [size] {};
+		//this->size = other.size;
+		//this->str = new char [size] {};
 		for (int i = 0; i < size; i++)
 			this->str[i] = other.str[i];
 
 		cout << "CopyConstructor: \t" << this << endl;
 	}
-	String(String&& other)
+	String(String&& other):size(other.size), str(other.str)
 	{
 		//MoveConstructor - ShallowCopy:
-		this->size = other.size;
-		this->str = other.str;
+		//this->size = other.size;
+		//this->str = other.str;
 		//Обнуляем принимаемый объект, для того, чтобы предотвратить удаление его ресурсов деструктором.
 		other.size = 0;
 		other.str = nullptr;
@@ -215,6 +217,9 @@ void main()
 	str10.print();
 
 	//Фигурные скобки для вызова конструкторов следует использовать с большой осторожностью
+
+	String str11 = str3 + str8;
+	str11.print();
 }
 /*
 Использование динамической памяти в классе:
@@ -241,6 +246,8 @@ CopyAssignment прежде чем выделить новую дмнамическую память обязательно должен 
 
 Конструктор копирования и оператор присваивания еще называют CopyMethods или CopySemantic.
 
+------------------------------------------------------------------------------------------------------
+
  Перегрузка оператора []:
 
  Оператор "[]" принимает индекс элемента массива и возвращает значение по индексу.
@@ -262,6 +269,8 @@ CopyAssignment прежде чем выделить новую дмнамическую память обязательно должен 
 
  Методы переноса принимают не константу и не ссылку, а r-value reference 
 
+ ------------------------------------------------------------------------------------------------------
+
  The rule of 3:
 
  Если в классе используется динамическая память, то этот класс обязательно должен отвечать правилу 3:
@@ -274,6 +283,14 @@ CopyAssignment прежде чем выделить новую дмнамическую память обязательно должен 
  После выхода стандарта C++, который ввел MoveConstructor, которые выполняют поверхностное копирование, "the rule of 3" стало "the rule of 5".
 
  Если в классе не используется динамическая память, то класс соответствует "the rule of 0":
- В классе не нужен ни один из вышеперечисленных методов
+ В классе не нужен ни один из вышеперечисленных методов.
+
+ ------------------------------------------------------------------------------------------------------
+
+ Инициализация в заголовке:
+
+ Инициализаторы в заголовке конструктора отрабатывают в том порядке, в котором объявлены переменные члены класса.
+ Инициализация в заголовке доступна только в конструкторах.
+ Если член класса является константой, то его можно проинициализировать только в заголовке
 
 */
